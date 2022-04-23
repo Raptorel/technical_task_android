@@ -5,6 +5,18 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.6.10-RC' apply false
 }
 
+ext {
+    nav_version = "2.3.5"
+    lifecycle_version = '2.2.0'
+    rxjava_version = '2.2.19'
+    rxandroid_version = '2.1.1'
+    retrofit_version = '2.5.0'
+    okhttp_version = '4.9.1'
+    okhttp_profiler_version = '1.0.7'
+    dagger_version = '2.32'
+    dagger_compiler_version = '2.18'
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
