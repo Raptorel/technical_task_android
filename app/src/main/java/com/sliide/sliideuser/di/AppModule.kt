@@ -2,7 +2,9 @@ package com.sliide.sliideuser.di
 
 import android.app.Application
 import com.sliide.sliideuser.SliideUserApplication
-import com.sliide.sliideuser.services.Network
+import com.sliide.sliideuser.database.UsersDatabase
+import com.sliide.sliideuser.database.getDatabase
+import com.sliide.sliideuser.network.Network
 import dagger.Module
 import dagger.Provides
 
@@ -16,4 +18,7 @@ class AppModule {
 
     @Provides
     fun provideApplication(): Application = SliideUserApplication.INSTANCE
+
+    @Provides
+    fun provideDatabase(): UsersDatabase = getDatabase(provideApplication())
 }
