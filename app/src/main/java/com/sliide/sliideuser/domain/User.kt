@@ -5,8 +5,8 @@ package com.sliide.sliideuser.domain
  */
 
 data class User(
-    val id: Int?,
-    val name: String?,
-    val email: String?,
+    val id: Long,
+    val name: String,
+    val email: String,
     val creationTime: String
 )

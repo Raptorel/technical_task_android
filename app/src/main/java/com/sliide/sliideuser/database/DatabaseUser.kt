@@ -13,9 +13,9 @@ import java.util.*
 @Entity
 data class DatabaseUser constructor(
     @PrimaryKey
-    val id: Int?,
-    val name: String?,
-    val email: String?,
+    val id: Long,
+    val name: String,
+    val email: String,
     val creationTime: String
 )
 

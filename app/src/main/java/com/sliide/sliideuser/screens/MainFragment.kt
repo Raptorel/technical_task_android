@@ -9,7 +9,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.sliide.sliideuser.SliideUserApplication
+import com.sliide.sliideuser.adapters.UserLongPressListener
+import com.sliide.sliideuser.adapters.UsersAdapter
 import com.sliide.sliideuser.databinding.FragmentMainBinding
 import com.sliide.sliideuser.utils.Resource
 import com.sliide.sliideuser.viewmodels.MainViewModel
@@ -25,6 +29,7 @@ class MainFragment : Fragment() {
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
+    private lateinit var usersListAdapter: UsersAdapter
 
     override fun onAttach(context: Context) {
         SliideUserApplication.appComponent.inject(this)
@@ -36,7 +41,20 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        setUpUserRecycler()
         return binding.root
+    }
+
+    private fun setUpUserRecycler() {
+        val manager = LinearLayoutManager(requireContext())
+        binding.rvUsers.layoutManager = manager
+
+        usersListAdapter = UsersAdapter(UserLongPressListener { userId ->
+            true
+            //TODO Future call to the viewmodel
+        })
+
+        binding.rvUsers.adapter = usersListAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,13 +82,7 @@ class MainFragment : Fragment() {
     private fun observeUsers() {
         viewModel.users.observe(viewLifecycleOwner) { users ->
             users?.apply {
-                firstOrNull()?.let {
-                    Toast.makeText(
-                        requireContext(),
-                        "The first user is ${it.name}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                usersListAdapter.submitList(this)
             }
         }
     }

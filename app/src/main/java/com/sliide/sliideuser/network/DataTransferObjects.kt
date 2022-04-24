@@ -11,15 +11,15 @@ import java.util.*
  * Created by Robert Ruxandrescu on 4/24/22.
  */
 
-const val DATE_PATTERN = "yyyy-MM-dd HH:mm:ssZ"
+const val DATE_PATTERN = "yyyy-MM-dd"
 
 @JsonClass(generateAdapter = true)
 data class NetworkUser(
-    val id: Int?,
-    val name: String?,
-    val email: String?,
-    val gender: String?,
-    val status: String?
+    val id: Long,
+    val name: String,
+    val email: String,
+    val gender: String,
+    val status: String
 )
 
 /**
