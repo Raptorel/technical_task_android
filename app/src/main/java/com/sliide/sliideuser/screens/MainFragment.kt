@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sliide.sliideuser.SliideUserApplication
 import com.sliide.sliideuser.adapters.UserLongPressListener
@@ -41,20 +39,30 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        setUpUserRecycler()
+        setUpUi()
         return binding.root
     }
 
-    private fun setUpUserRecycler() {
+    private fun setUpUi() {
         val manager = LinearLayoutManager(requireContext())
         binding.rvUsers.layoutManager = manager
 
         usersListAdapter = UsersAdapter(UserLongPressListener { userId ->
+            showDeleteUserDialog()
             true
             //TODO Future call to the viewmodel
         })
 
         binding.rvUsers.adapter = usersListAdapter
+
+        binding.fabAddUser.setOnClickListener {
+            Toast.makeText(requireContext(), "Add user clicked!", Toast.LENGTH_LONG).show()
+            //TODO Add user functionality
+        }
+    }
+
+    private fun showDeleteUserDialog() {
+        TODO("Not yet implemented")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
