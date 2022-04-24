@@ -67,13 +67,13 @@ class MainFragment : Fragment() {
         viewModel.progress.observe(viewLifecycleOwner) {
             when (it.status) {
                 Resource.Status.LOADING -> {
-                    //show progress
+                    binding.pbLoading.visibility = View.VISIBLE
                 }
                 Resource.Status.ERROR -> {
-                    //hide progress & show a network error message
+                    binding.pbLoading.visibility = View.GONE
                 }
                 Resource.Status.SUCCESS -> {
-                    //hide progress
+                    binding.pbLoading.visibility = View.GONE
                 }
             }
         }
