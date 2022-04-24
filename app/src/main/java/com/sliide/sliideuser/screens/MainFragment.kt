@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sliide.sliideuser.SliideUserApplication
 import com.sliide.sliideuser.databinding.FragmentMainBinding
+import com.sliide.sliideuser.utils.Resource
 import com.sliide.sliideuser.viewmodels.MainViewModel
 import com.sliide.sliideuser.viewmodels.MainViewModelFactory
 import javax.inject.Inject
@@ -40,10 +41,35 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeProgress()
+        observeUsers()
+    }
+
+    private fun observeProgress() {
+        viewModel.progress.observe(viewLifecycleOwner) {
+            when (it.status) {
+                Resource.Status.LOADING -> {
+                    //show progress
+                }
+                Resource.Status.ERROR -> {
+                    //hide progress & show a network error message
+                }
+                Resource.Status.SUCCESS -> {
+                    //hide progress
+                }
+            }
+        }
+    }
+
+    private fun observeUsers() {
         viewModel.users.observe(viewLifecycleOwner) { users ->
             users?.apply {
                 firstOrNull()?.let {
-                    Toast.makeText(requireContext(), "The first user is ${it.name}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "The first user is ${it.name}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }

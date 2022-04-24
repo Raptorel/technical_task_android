@@ -18,7 +18,8 @@ interface UsersDao {
     @Query("select * from databaseuser")
     fun getUsers(): LiveData<List<DatabaseUser>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    //OnConflictStrategy.IGNORE because we don't want to overwrite the user date
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(vararg users: DatabaseUser)
 
 }
