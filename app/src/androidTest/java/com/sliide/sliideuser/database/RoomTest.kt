@@ -58,4 +58,18 @@ class RoomTest {
         ViewMatchers.assertThat(loaded.email, `is`(user.email))
         ViewMatchers.assertThat(loaded.creationTime, `is`(user.creationTime))
     }
+
+    @Test
+    fun deleteUserAndCheckForDeletion() = runBlockingTest {
+        // GIVEN - Insert a user.
+        val user = DatabaseUser(1, "Robert", "rob@android.com", "Today")
+        database.usersDao.insertUser(user)
+
+        // WHEN - Delete the user by id from the database
+        database.usersDao.deleteUser(user.id)
+        val loaded = database.usersDao.getUserById(user.id)
+
+        // THEN - The loaded user show be null
+        ViewMatchers.assertThat(loaded, nullValue())
+    }
 }
