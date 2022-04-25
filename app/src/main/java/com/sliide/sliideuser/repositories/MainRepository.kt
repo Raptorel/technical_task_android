@@ -32,8 +32,9 @@ class MainRepository @Inject constructor(
         progressLiveData.value = Resource.loading()
         withContext(Dispatchers.IO) {
             val networkUsers = goRestService.getUsers().await()
-            progressLiveData.postValue(Resource.success(Unit))
+            database.usersDao.deleteAll()
             database.usersDao.insertAll(*networkUsers.asDatabaseModel())
+            progressLiveData.postValue(Resource.success(Unit))
         }
     }
 
@@ -42,8 +43,8 @@ class MainRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             val response = goRestService.deleteUser(userId).await()
             if (response.isSuccessful) {
-                progressLiveData.postValue(Resource.success(Unit))
                 database.usersDao.deleteUser(userId)
+                progressLiveData.postValue(Resource.success(Unit))
             } else {
                 progressLiveData.postValue(Resource.error())
             }

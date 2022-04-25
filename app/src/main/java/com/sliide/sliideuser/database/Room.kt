@@ -24,6 +24,9 @@ interface UsersDao {
 
     @Query("DELETE FROM databaseuser WHERE id = :userId")
     fun deleteUser(userId: Long)
+
+    @Query("DELETE FROM databaseuser")
+    fun deleteAll()
 }
 
 private lateinit var INSTANCE: UsersDatabase
