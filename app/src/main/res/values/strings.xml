@@ -3,4 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description_add_user">Add User</string>
+    <string name="delete_user_confirmation">Are you sure you want to remove this user?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

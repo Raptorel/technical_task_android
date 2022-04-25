@@ -35,4 +35,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun deleteUser(userId: Long) {
+        viewModelScope.launch {
+            try {
+                mainRepository.deleteUser(userId)
+            } catch (e: Exception) {
+                _progress.value = Resource.error()
+            }
+        }
+    }
+
 }

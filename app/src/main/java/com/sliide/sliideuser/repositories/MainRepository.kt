@@ -7,6 +7,7 @@ import com.sliide.sliideuser.database.UsersDatabase
 import com.sliide.sliideuser.database.asDomainModel
 import com.sliide.sliideuser.domain.User
 import com.sliide.sliideuser.network.GoRestService
+import com.sliide.sliideuser.network.GoRestService.Companion.RESPONSE_CODE_OK_NO_CONTENT
 import com.sliide.sliideuser.network.asDatabaseModel
 import com.sliide.sliideuser.utils.Resource
 import com.sliide.sliideuser.utils.SingleLiveEvent
@@ -19,7 +20,8 @@ import javax.inject.Inject
  */
 class MainRepository @Inject constructor(
     private val goRestService: GoRestService,
-    private val database: UsersDatabase) {
+    private val database: UsersDatabase
+) {
 
     val progressLiveData: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val usersLiveData: LiveData<List<User>> = Transformations.map(database.usersDao.getUsers()) {
@@ -38,7 +40,13 @@ class MainRepository @Inject constructor(
     suspend fun deleteUser(userId: Long) {
         progressLiveData.value = Resource.loading()
         withContext(Dispatchers.IO) {
-            goRestService.deleteUser(userId).await()
+            val response = goRestService.deleteUser(userId).await()
+            if (response.isSuccessful) {
+                progressLiveData.postValue(Resource.success(Unit))
+                database.usersDao.deleteUser(userId)
+            } else {
+                progressLiveData.postValue(Resource.error())
+            }
         }
     }
 }

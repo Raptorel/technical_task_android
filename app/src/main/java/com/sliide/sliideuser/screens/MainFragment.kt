@@ -13,16 +13,20 @@ import com.sliide.sliideuser.SliideUserApplication
 import com.sliide.sliideuser.adapters.UserLongPressListener
 import com.sliide.sliideuser.adapters.UsersAdapter
 import com.sliide.sliideuser.databinding.FragmentMainBinding
+import com.sliide.sliideuser.dialogs.BaseDialogFragment
+import com.sliide.sliideuser.dialogs.UserMessageDialog
 import com.sliide.sliideuser.utils.Resource
 import com.sliide.sliideuser.viewmodels.MainViewModel
 import com.sliide.sliideuser.viewmodels.MainViewModelFactory
 import javax.inject.Inject
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), BaseDialogFragment.Callback {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!! //this is safe
+
     @Inject
     lateinit var viewModelFactory: MainViewModelFactory
+
     //the viewModel should not be referenced before onViewCreated()
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -48,9 +52,8 @@ class MainFragment : Fragment() {
         binding.rvUsers.layoutManager = manager
 
         usersListAdapter = UsersAdapter(UserLongPressListener { userId ->
-            showDeleteUserDialog()
+            showDeleteUserDialog(userId)
             true
-            //TODO Future call to the viewmodel
         })
 
         binding.rvUsers.adapter = usersListAdapter
@@ -65,8 +68,9 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun showDeleteUserDialog() {
-        TODO("Not yet implemented")
+    private fun showDeleteUserDialog(userId: Long) {
+        UserMessageDialog.newInstance(this, userId)
+            .show(childFragmentManager, UserMessageDialog::class.java.simpleName)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,6 +87,7 @@ class MainFragment : Fragment() {
                 }
                 Resource.Status.ERROR -> {
                     hideLoading()
+                    Toast.makeText(requireContext(), "An error has occurred", Toast.LENGTH_LONG).show()
                 }
                 Resource.Status.SUCCESS -> {
                     hideLoading()
@@ -107,5 +112,17 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onPositiveButtonPressed(
+        userMessageDialogType: BaseDialogFragment.UserMessageDialogType,
+        userId: Long
+    ) {
+        when (userMessageDialogType) {
+            BaseDialogFragment.UserMessageDialogType.DELETE_USER -> {
+                viewModel.deleteUser(userId)
+            }
+            BaseDialogFragment.UserMessageDialogType.ADD_USER -> {}
+        }
     }
 }
