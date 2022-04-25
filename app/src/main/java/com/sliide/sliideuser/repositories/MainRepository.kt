@@ -34,4 +34,11 @@ class MainRepository @Inject constructor(
             database.usersDao.insertAll(*networkUsers.asDatabaseModel())
         }
     }
+
+    suspend fun deleteUser(userId: Long) {
+        progressLiveData.value = Resource.loading()
+        withContext(Dispatchers.IO) {
+            goRestService.deleteUser(userId).await()
+        }
+    }
 }

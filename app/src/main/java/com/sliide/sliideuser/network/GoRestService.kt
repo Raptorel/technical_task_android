@@ -9,9 +9,12 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 /**
  * Created by Robert Ruxandrescu on 4/23/22.
@@ -19,6 +22,9 @@ import retrofit2.http.GET
 interface GoRestService {
     @GET("users")
     fun getUsers(): Deferred<List<NetworkUser>>
+
+    @DELETE("users/{userId}")
+    fun deleteUser(@Path("userId") userId: Long): Deferred<Response>
 }
 
 /**

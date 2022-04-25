@@ -22,6 +22,10 @@ class MainViewModel @Inject constructor(
     val progress: LiveData<Resource<Unit>> = _progress
 
     init {
+        refreshUsersList()
+    }
+
+    fun refreshUsersList() {
         viewModelScope.launch {
             try {
                 mainRepository.refreshUsers()

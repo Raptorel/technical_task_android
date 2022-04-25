@@ -59,6 +59,10 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), "Add user clicked!", Toast.LENGTH_LONG).show()
             //TODO Add user functionality
         }
+
+        binding.srlContainer.setOnRefreshListener {
+            viewModel.refreshUsersList()
+        }
     }
 
     private fun showDeleteUserDialog() {
@@ -78,10 +82,10 @@ class MainFragment : Fragment() {
                     binding.pbLoading.visibility = View.VISIBLE
                 }
                 Resource.Status.ERROR -> {
-                    binding.pbLoading.visibility = View.GONE
+                    hideLoading()
                 }
                 Resource.Status.SUCCESS -> {
-                    binding.pbLoading.visibility = View.GONE
+                    hideLoading()
                 }
             }
         }
@@ -93,6 +97,11 @@ class MainFragment : Fragment() {
                 usersListAdapter.submitList(this)
             }
         }
+    }
+
+    private fun hideLoading() {
+        binding.pbLoading.visibility = View.GONE
+        binding.srlContainer.isRefreshing = false
     }
 
     override fun onDestroyView() {
