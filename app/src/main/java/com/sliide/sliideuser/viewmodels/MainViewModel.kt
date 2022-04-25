@@ -16,7 +16,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository,
     application: Application
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
 
     val users = mainRepository.usersLiveData
     private val _progress = mainRepository.progressLiveData

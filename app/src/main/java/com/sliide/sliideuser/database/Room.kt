@@ -3,6 +3,7 @@ package com.sliide.sliideuser.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.sliide.sliideuser.network.NetworkUser
 
 /**
  * Created by Robert Ruxandrescu on 4/24/22.
@@ -17,6 +18,9 @@ interface UsersDao {
 
     @Query("select * from databaseuser")
     fun getUsers(): LiveData<List<DatabaseUser>>
+
+    @Query("SELECT * FROM databaseuser WHERE id = :userId")
+    fun getUserById(userId: Long): DatabaseUser?
 
     //OnConflictStrategy.IGNORE because we don't want to overwrite the user date
     @Insert(onConflict = OnConflictStrategy.IGNORE)
