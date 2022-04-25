@@ -2,6 +2,7 @@ package com.sliide.sliideuser.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,8 @@ class AddUserDialog : BaseDialogFragment() {
 
         binding.btnAddUser.setOnClickListener {
             if (formIsValid()) {
-                val networkUser = createUser(binding.etName.getCleanText(), binding.etEmail.getCleanText())
+                val networkUser =
+                    createUser(binding.etName.getCleanText(), binding.etEmail.getCleanText())
                 addUserCallback?.onUserAdd(networkUser)
                 dismiss()
             } else {
@@ -62,11 +64,17 @@ class AddUserDialog : BaseDialogFragment() {
 
     private fun showFormError() {
         if (binding.etName.text.isBlank()) binding.etName.error = getString(R.string.blank_field)
-        if (binding.etEmail.text.isBlank()) binding.etName.error = getString(R.string.blank_field)
+        if (binding.etEmail.text.isBlank()) binding.etEmail.error = getString(R.string.blank_field)
+        if (!Patterns.EMAIL_ADDRESS.matcher(binding.etEmail.text).matches()) binding.etEmail.error =
+            getString(
+                R.string.not_valid_email
+            )
     }
 
     private fun formIsValid(): Boolean =
-        binding.etName.text.isNotBlank() && binding.etEmail.text.isNotBlank()
+        binding.etName.text.isNotBlank() &&
+                binding.etEmail.text.isNotBlank() &&
+                Patterns.EMAIL_ADDRESS.matcher(binding.etEmail.text).matches()
 
     private fun createUser(userName: String, userEmail: String): NetworkUser {
         return NetworkUser(name = userName, email = userEmail)

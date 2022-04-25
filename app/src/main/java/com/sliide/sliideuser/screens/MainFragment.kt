@@ -103,9 +103,24 @@ class MainFragment : Fragment(), BaseDialogFragment.DeleteUserCallback, BaseDial
     private fun observeUsers() {
         viewModel.users.observe(viewLifecycleOwner) { users ->
             users?.apply {
-                usersListAdapter.submitList(this)
+                if (users.isNotEmpty()) {
+                    showUsersList()
+                    usersListAdapter.submitList(this)
+                } else {
+                    hideUsersList()
+                }
             }
         }
+    }
+
+    private fun showUsersList() {
+        binding.tvNoUsers.visibility = View.GONE
+        binding.rvUsers.visibility = View.VISIBLE
+    }
+
+    private fun hideUsersList() {
+        binding.rvUsers.visibility = View.GONE
+        binding.tvNoUsers.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {

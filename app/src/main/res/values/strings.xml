@@ -12,4 +12,6 @@
     <string name="email">Email:</string>
     <string name="add_user">Add User</string>
     <string name="blank_field">This field is blank</string>
+    <string name="no_users">There are currently no users</string>
+    <string name="not_valid_email">Not a valid email address</string>
 </resources>
