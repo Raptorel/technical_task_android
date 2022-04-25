@@ -1,22 +1,21 @@
 package com.sliide.sliideuser.dialogs
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.sliide.sliideuser.R
 
 /**
  * Created by Robert Ruxandrescu on 4/24/22.
  */
-class UserMessageDialog : BaseDialogFragment() {
+class DeleteUserDialog : BaseDialogFragment() {
 
     private var userId: Long = -1
 
     companion object {
-        fun newInstance(callback: Callback, userId: Long): UserMessageDialog {
-            val dialog = UserMessageDialog().apply {
-                this.callback = callback
+        fun newInstance(deleteUserCallback: DeleteUserCallback, userId: Long): DeleteUserDialog {
+            val dialog = DeleteUserDialog().apply {
+                this.deleteUserCallback = deleteUserCallback
                 this.arguments = Bundle().apply { putLong(KEY_USER_ID, userId) }
             }
             return dialog
@@ -31,8 +30,7 @@ class UserMessageDialog : BaseDialogFragment() {
         return AlertDialog.Builder(requireContext())
             .setMessage(getString(R.string.delete_user_confirmation))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                callback.onPositiveButtonPressed(
-                    UserMessageDialogType.DELETE_USER,
+                deleteUserCallback?.onUserDelete(
                     userId
                 )
             }

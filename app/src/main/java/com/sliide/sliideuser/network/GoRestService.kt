@@ -13,9 +13,7 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 /**
  * Created by Robert Ruxandrescu on 4/23/22.
@@ -26,10 +24,13 @@ interface GoRestService {
     }
 
     @GET("users")
-    fun getUsers(): Deferred<List<NetworkUser>>
+    fun getUsersAsync(): Deferred<List<NetworkUser>>
 
     @DELETE("users/{userId}")
-    fun deleteUser(@Path("userId") userId: Long): Deferred<Response<ResponseBody>>
+    fun deleteUserAsync(@Path("userId") userId: Long): Deferred<Response<ResponseBody>>
+
+    @POST("users")
+    fun addUserAsync(@Body networkUser: NetworkUser): Deferred<Response<ResponseBody>>
 }
 
 /**
@@ -42,13 +43,15 @@ private val moshi = Moshi.Builder()
 
 /**
  * Main entry point for network access. Call like `Network.goRestService.getUsers() or simply use the repository's service`
+ * The token itself is held in the gradle.properties (Global Properties) file. Please create a new variable there with
+ * your own token (in the form of token="b74c25...") in order to properly use this application
  */
 object Network {
     // Build a client that adds the necessary token for all the calls
     private val tokenClient = OkHttpClient.Builder()
         .addInterceptor(Interceptor { chain ->
             val requestBuilder = chain.request().newBuilder()
-            requestBuilder.header("Authorization", "Bearer ${BuildConfig.token}")
+            requestBuilder.header("Authorization", "Bearer ${BuildConfig.token}") //use your own token as per this method's documentation
             chain.proceed(requestBuilder.build())
         })
         .addInterceptor(OkHttpProfilerInterceptor())

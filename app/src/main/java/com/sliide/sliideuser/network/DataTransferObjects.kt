@@ -15,11 +15,11 @@ const val DATE_PATTERN = "yyyy-MM-dd"
 
 @JsonClass(generateAdapter = true)
 data class NetworkUser(
-    val id: Long,
+    val id: Long = Random().nextLong(),
     val name: String,
     val email: String,
-    val gender: String,
-    val status: String
+    val gender: String = "female",
+    val status: String = "inactive"
 )
 
 /**
@@ -45,4 +45,13 @@ fun List<NetworkUser>.asDatabaseModel(): Array<DatabaseUser> {
             creationTime = SimpleDateFormat(DATE_PATTERN).format(Date())
         )
     }.toTypedArray()
+}
+
+fun NetworkUser.asDatabaseModel(): DatabaseUser {
+    return DatabaseUser(
+        id = this.id,
+        name = this.name,
+        email = this.email,
+        creationTime = SimpleDateFormat(DATE_PATTERN).format(Date())
+    )
 }

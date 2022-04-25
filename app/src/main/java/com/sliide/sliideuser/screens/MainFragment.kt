@@ -13,14 +13,17 @@ import com.sliide.sliideuser.SliideUserApplication
 import com.sliide.sliideuser.adapters.UserLongPressListener
 import com.sliide.sliideuser.adapters.UsersAdapter
 import com.sliide.sliideuser.databinding.FragmentMainBinding
+import com.sliide.sliideuser.dialogs.AddUserDialog
 import com.sliide.sliideuser.dialogs.BaseDialogFragment
-import com.sliide.sliideuser.dialogs.UserMessageDialog
+import com.sliide.sliideuser.dialogs.DeleteUserDialog
+import com.sliide.sliideuser.domain.User
+import com.sliide.sliideuser.network.NetworkUser
 import com.sliide.sliideuser.utils.Resource
 import com.sliide.sliideuser.viewmodels.MainViewModel
 import com.sliide.sliideuser.viewmodels.MainViewModelFactory
 import javax.inject.Inject
 
-class MainFragment : Fragment(), BaseDialogFragment.Callback {
+class MainFragment : Fragment(), BaseDialogFragment.DeleteUserCallback, BaseDialogFragment.AddUserCallback {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!! //this is safe
 
@@ -59,8 +62,8 @@ class MainFragment : Fragment(), BaseDialogFragment.Callback {
         binding.rvUsers.adapter = usersListAdapter
 
         binding.fabAddUser.setOnClickListener {
-            Toast.makeText(requireContext(), "Add user clicked!", Toast.LENGTH_LONG).show()
-            //TODO Add user functionality
+            AddUserDialog.newInstance(this)
+                .show(childFragmentManager, AddUserDialog::class.java.simpleName)
         }
 
         binding.srlContainer.setOnRefreshListener {
@@ -69,8 +72,8 @@ class MainFragment : Fragment(), BaseDialogFragment.Callback {
     }
 
     private fun showDeleteUserDialog(userId: Long) {
-        UserMessageDialog.newInstance(this, userId)
-            .show(childFragmentManager, UserMessageDialog::class.java.simpleName)
+        DeleteUserDialog.newInstance(this, userId)
+            .show(childFragmentManager, DeleteUserDialog::class.java.simpleName)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,7 +90,8 @@ class MainFragment : Fragment(), BaseDialogFragment.Callback {
                 }
                 Resource.Status.ERROR -> {
                     hideLoading()
-                    Toast.makeText(requireContext(), "An error has occurred", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "An error has occurred", Toast.LENGTH_LONG)
+                        .show()
                 }
                 Resource.Status.SUCCESS -> {
                     hideLoading()
@@ -114,15 +118,13 @@ class MainFragment : Fragment(), BaseDialogFragment.Callback {
         super.onDestroyView()
     }
 
-    override fun onPositiveButtonPressed(
-        userMessageDialogType: BaseDialogFragment.UserMessageDialogType,
+    override fun onUserDelete(
         userId: Long
     ) {
-        when (userMessageDialogType) {
-            BaseDialogFragment.UserMessageDialogType.DELETE_USER -> {
-                viewModel.deleteUser(userId)
-            }
-            BaseDialogFragment.UserMessageDialogType.ADD_USER -> {}
-        }
+        viewModel.deleteUser(userId)
+    }
+
+    override fun onUserAdd(networkUser: NetworkUser) {
+        viewModel.addUser(networkUser)
     }
 }

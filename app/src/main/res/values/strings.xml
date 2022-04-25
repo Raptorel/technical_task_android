@@ -6,4 +6,10 @@
     <string name="delete_user_confirmation">Are you sure you want to remove this user?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="name">Name:</string>
+    <string name="please_insert_user_name">Please insert user name</string>
+    <string name="please_type_the_user_s_email">Please type the user\'s email</string>
+    <string name="email">Email:</string>
+    <string name="add_user">Add User</string>
+    <string name="blank_field">This field is blank</string>
 </resources>

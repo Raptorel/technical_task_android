@@ -7,7 +7,7 @@ import com.sliide.sliideuser.database.UsersDatabase
 import com.sliide.sliideuser.database.asDomainModel
 import com.sliide.sliideuser.domain.User
 import com.sliide.sliideuser.network.GoRestService
-import com.sliide.sliideuser.network.GoRestService.Companion.RESPONSE_CODE_OK_NO_CONTENT
+import com.sliide.sliideuser.network.NetworkUser
 import com.sliide.sliideuser.network.asDatabaseModel
 import com.sliide.sliideuser.utils.Resource
 import com.sliide.sliideuser.utils.SingleLiveEvent
@@ -31,7 +31,7 @@ class MainRepository @Inject constructor(
     suspend fun refreshUsers() {
         progressLiveData.value = Resource.loading()
         withContext(Dispatchers.IO) {
-            val networkUsers = goRestService.getUsers().await()
+            val networkUsers = goRestService.getUsersAsync().await()
             database.usersDao.deleteAll()
             database.usersDao.insertAll(*networkUsers.asDatabaseModel())
             progressLiveData.postValue(Resource.success(Unit))
@@ -41,9 +41,22 @@ class MainRepository @Inject constructor(
     suspend fun deleteUser(userId: Long) {
         progressLiveData.value = Resource.loading()
         withContext(Dispatchers.IO) {
-            val response = goRestService.deleteUser(userId).await()
+            val response = goRestService.deleteUserAsync(userId).await()
             if (response.isSuccessful) {
                 database.usersDao.deleteUser(userId)
+                progressLiveData.postValue(Resource.success(Unit))
+            } else {
+                progressLiveData.postValue(Resource.error())
+            }
+        }
+    }
+
+    suspend fun addUser(networkUser: NetworkUser) {
+        progressLiveData.value = Resource.loading()
+        withContext(Dispatchers.IO) {
+            val response = goRestService.addUserAsync(networkUser).await()
+            if (response.isSuccessful) {
+                database.usersDao.insertUser(networkUser.asDatabaseModel())
                 progressLiveData.postValue(Resource.success(Unit))
             } else {
                 progressLiveData.postValue(Resource.error())

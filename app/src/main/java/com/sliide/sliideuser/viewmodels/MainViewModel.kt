@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.sliide.sliideuser.network.NetworkUser
 import com.sliide.sliideuser.repositories.MainRepository
 import com.sliide.sliideuser.utils.Resource
 import kotlinx.coroutines.launch
@@ -39,6 +40,16 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 mainRepository.deleteUser(userId)
+            } catch (e: Exception) {
+                _progress.value = Resource.error()
+            }
+        }
+    }
+
+    fun addUser(networkUser: NetworkUser) {
+        viewModelScope.launch {
+            try {
+                mainRepository.addUser(networkUser)
             } catch (e: Exception) {
                 _progress.value = Resource.error()
             }
